@@ -28,6 +28,7 @@
     "validate": "svelte-check"
   },
   "dependencies": {
+    "bulma": "^0.9.3",
     "electron-reload": "^2.0.0-alpha.1"
   }
 }
