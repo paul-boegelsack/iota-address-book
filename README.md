@@ -1,3 +1,3 @@
-# Electron Svelte Typescript
+# IOTA Address Book
 
 -- placeholder--
