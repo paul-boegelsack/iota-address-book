@@ -23,7 +23,7 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack --watch",
-    "start:electron": "cross-env NODE_ENV=development electron public/build/app.js",
+    "start:prod": "npm run build && cross-env NODE_ENV=development electron public/build/app.js",
     "build": "cross-env NODE_ENV=production webpack",
     "validate": "svelte-check"
   },
