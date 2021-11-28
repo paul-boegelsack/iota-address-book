@@ -1,5 +1,6 @@
 
 <script lang="ts">
+	import 'bulma/css/bulma.css';
 	export let name: string;
 	export let version: string;
 
