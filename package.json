@@ -1,6 +1,6 @@
 {
   "name": "electron-svelt-typescript",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "./public/build/app.js",
   "devDependencies": {
     "@tsconfig/svelte": "^1.0.10",
