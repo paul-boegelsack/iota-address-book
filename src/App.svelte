@@ -1,38 +1,57 @@
-
 <script lang="ts">
 	import 'bulma/css/bulma.css';
-	export let name: string;
-	export let version: string;
+	import TextInput from './components/common/TextInput.svelte'
+	import InputOptions from './components/InputOptions.svelte'
+	import AddressList from './components/AddressList.svelte'
 
-	const getVersion = async (): Promise<string> => {
-		version = await window.api.GetVersion();
-		return version;
-	}
+	const addresses = [
+		{
+			id: 0,
+			txid: "ALSDIOWJLASDFJOIWOWKKDLFHLAHELIHLSDIHHHLIE",
+			balance: 12.320
+		},
+		{
+			id: 1,
+			txid: "TMASDKEAKASDJFKEAASDASKDAKSFJSJKEJKJEKSJE",
+			balance: 12.320
+		},
+		{
+			id: 2,
+			txid: "YJIOWHOWIHOIHOIDFLYLKKLWIEHWLIHPQOIHSOIDF",
+			balance: 12.320
+		}
+	]
 </script>
 
-<main>
-	<h1>Hello {name}!</h1>
-	<button on:click|once={getVersion}>Version: {version || "Get Version"}</button>
+<main class="panel m-1">
+	<div class="panel-heading columns">
+		<div class="logo mr-2" alt="iota logo"></div> 
+		<span class="mr-3">|</span>
+		<span>ADDRESS BOOK</span>
+	</div>
+	<InputOptions />
+	<div class="panel-block columns">
+		<TextInput />	
+	</div>
+	<AddressList {addresses} />
 </main>
 
-<style>
+<style>	
 	main {
 		text-align: center;
 		padding: 1em;
-		max-width: 240px;
 		margin: 0 auto;
 	}
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
+	.logo {
+  		background-color: white;
+		width:5vw;
+  		-webkit-mask: url(assets/iota-miota-logo.svg) no-repeat center;
+		mask: url(assets/iota-miota-logo.svg) no-repeat center;
 	}
 
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
+	.panel-heading {
+		color: white;
+		background-color: #131f37;
 	}
 </style>
