@@ -31,6 +31,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@iota/iota.js": "^1.8.2",
+    "@iota/mqtt.js": "^1.8.2",
     "bulma": "^0.9.3",
     "electron-reload": "^2.0.0-alpha.1"
   }
