@@ -6,6 +6,10 @@
 
 	let addressInput = "";
 	let addresses = []
+	let links = [
+		{name: "Add", active: true},
+		{name: "Search", active: false}
+	]
 
 	const onInput = (event) => {
 		addressInput = event.target.value;
@@ -16,6 +20,16 @@
 			addresses = await window.api.UpdateAddressList(addressInput);
 		}
 	}
+
+	function activateLink (){
+		links.forEach(link => {
+            if(link.name === this.name)
+                return link.active = true;
+
+            return link.active = false;
+        })
+		links = [...links];
+    }
 
 	async function onAddressDelete(){
 		addresses = await window.api.DeleteAddressFromList(this.bechAddress)
@@ -34,7 +48,7 @@
 		<span class="mr-3">|</span>
 		<span>ADDRESS BOOK</span>
 	</div>
-	<InputOptions />
+	<InputOptions {links} {activateLink} />
 	<div class="panel-block columns">
 		<TextInput {onInput} onKeypress={onInputKeypress} />	
 	</div>
