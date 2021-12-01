@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 
-import { IotaAddressService, Address } from './lib/IotaAddressService';
+import type { IotaAddress } from './lib/IotaAddress';
 
 const isDev: boolean = !app.isPackaged;
 const addressService = new IotaAddressService(
@@ -31,6 +31,6 @@ app.on('ready', createMainWindow);
 
 ipcMain.handle('get/address', async (event, bechAddress) => {
   console.log(bechAddress);
-  const address: Address = await addressService.GetAddress(bechAddress);
+  const address: IotaAddress = await addressService.GetAddress(bechAddress);
   return address;
 });
