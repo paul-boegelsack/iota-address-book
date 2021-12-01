@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "main": "./public/build/app.js",
   "devDependencies": {
+    "@iota/crypto.js": "^1.8.2",
     "@tsconfig/svelte": "^1.0.10",
     "@types/electron": "^1.6.10",
     "@types/jest": "^27.0.3",
