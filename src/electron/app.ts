@@ -51,6 +51,14 @@ function addressBalanceChanged(changedAddress) {
   events.emit('balance-changed', prepareAddressListForRenderer());
 }
 
+function deleteFromAddressList(bechAddress) {
+  let deleteIndex: number;
+  addressList.forEach((address, index) => {
+    if (address.GetBechAddress() === bechAddress) deleteIndex = index;
+  });
+  if (deleteIndex || deleteIndex === 0) addressList.splice(deleteIndex, 1);
+}
+
 app.on('ready', createMainWindow);
 
 ipcMain.handle('update/address-list', async (event, bechAddress) => {
@@ -58,5 +66,10 @@ ipcMain.handle('update/address-list', async (event, bechAddress) => {
   const address: IotaAddress = await addressService.GetAddress(bechAddress);
   address.ListenToBalanceChange(addressBalanceChanged);
   addressList.push(address);
+  return prepareAddressListForRenderer();
+});
+
+ipcMain.handle('delete/address-list', async (event, bechAddress) => {
+  deleteFromAddressList(bechAddress);
   return prepareAddressListForRenderer();
 });

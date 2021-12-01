@@ -17,6 +17,10 @@
 		}
 	}
 
+	async function onAddressDelete(){
+		addresses = await window.api.DeleteAddressFromList(this.bechAddress)
+	}
+
 	window.api.ListenToBalanceChanges((event, newAddressList) => {
 		const tmpAddressList = newAddressList;
 		addresses = tmpAddressList;
@@ -34,7 +38,7 @@
 	<div class="panel-block columns">
 		<TextInput {onInput} onKeypress={onInputKeypress} />	
 	</div>
-	<AddressList {addresses} />
+	<AddressList {onAddressDelete} {addresses} />
 </main>
 
 <style>	
