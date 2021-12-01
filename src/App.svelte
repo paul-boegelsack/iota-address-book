@@ -4,23 +4,23 @@
 	import InputOptions from './components/InputOptions.svelte'
 	import AddressList from './components/AddressList.svelte'
 
-	const addresses = [
-		{
-			id: 0,
-			txid: "ALSDIOWJLASDFJOIWOWKKDLFHLAHELIHLSDIHHHLIE",
-			balance: 12.320
-		},
-		{
-			id: 1,
-			txid: "TMASDKEAKASDJFKEAASDASKDAKSFJSJKEJKJEKSJE",
-			balance: 12.320
-		},
-		{
-			id: 2,
-			txid: "YJIOWHOWIHOIHOIDFLYLKKLWIEHWLIHPQOIHSOIDF",
-			balance: 12.320
+	let addressInput = "";
+	let addresses = []
+
+	const onInput = (event) => {
+		addressInput = event.target.value;
+	}
+
+	const onInputKeypress = async (event) => {
+		if(event.charCode === 13){
+			const address = await window.api.GetAddress(addressInput);
+			address.balance = (address.balance * 0.000001).toFixed(2);
+			address.id = addresses.length;
+			addresses.push(address);
+			addresses = [...addresses];
 		}
-	]
+	}
+
 </script>
 
 <main class="panel m-1">
@@ -31,7 +31,7 @@
 	</div>
 	<InputOptions />
 	<div class="panel-block columns">
-		<TextInput />	
+		<TextInput {onInput} onKeypress={onInputKeypress} />	
 	</div>
 	<AddressList {addresses} />
 </main>
