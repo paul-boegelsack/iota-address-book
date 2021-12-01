@@ -1,7 +1,8 @@
 import { ipcRenderer, contextBridge } from 'electron';
 
 export const WINDOW_API = {
-  GetVersion: () => ipcRenderer.invoke('get/version'),
+  GetAddress: (bechAddress: string) =>
+    ipcRenderer.invoke('get/address', bechAddress),
 };
 
 contextBridge.exposeInMainWorld('api', WINDOW_API);

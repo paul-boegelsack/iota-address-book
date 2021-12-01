@@ -1,7 +1,12 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 
+import { IotaAddressService, Address } from './lib/IotaAddressService';
+
 const isDev: boolean = !app.isPackaged;
+const addressService = new IotaAddressService(
+  'api.lb-0.h.chrysalis-devnet.iota.cafe'
+);
 
 let mainWindow: BrowserWindow;
 
@@ -24,6 +29,8 @@ function createMainWindow(): void {
 
 app.on('ready', createMainWindow);
 
-ipcMain.handleOnce('get/version', () => {
-  return app.getVersion();
+ipcMain.handle('get/address', async (event, bechAddress) => {
+  console.log(bechAddress);
+  const address: Address = await addressService.GetAddress(bechAddress);
+  return address;
 });
