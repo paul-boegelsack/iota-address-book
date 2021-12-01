@@ -17,6 +17,11 @@
 		}
 	}
 
+	window.api.ListenToBalanceChanges((event, newAddressList) => {
+		const tmpAddressList = newAddressList;
+		addresses = tmpAddressList;
+	})
+
 </script>
 
 <main class="panel m-1">

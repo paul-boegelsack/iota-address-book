@@ -1,5 +1,10 @@
+import { EventEmitter } from 'events';
+
 export class IotaAddress {
-  constructor(private bechAddress, private balance) {}
+  private events;
+  constructor(private bechAddress, private balance) {
+    this.events = new EventEmitter();
+  }
 
   GetBechAddress(): string {
     return this.bechAddress;
@@ -15,5 +20,10 @@ export class IotaAddress {
 
   IncreaseBalance(amount: number) {
     this.balance += amount;
+    this.events.emit('balance-changed', this.balance);
+  }
+
+  ListenToBalanceChange(callback) {
+    this.events.on('balance-changed', () => callback(this));
   }
 }
