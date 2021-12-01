@@ -13,11 +13,7 @@
 
 	const onInputKeypress = async (event) => {
 		if(event.charCode === 13){
-			const address = await window.api.GetAddress(addressInput);
-			address.balance = (address.balance * 0.000001).toFixed(2);
-			address.id = addresses.length;
-			addresses.push(address);
-			addresses = [...addresses];
+			addresses = await window.api.UpdateAddressList(addressInput);
 		}
 	}
 

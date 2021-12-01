@@ -31,10 +31,19 @@ function createMainWindow(): void {
   if (isDev) mainWindow.webContents.openDevTools();
 }
 
+function prepareAddressListForRenderer() {
+  return addressList.map((address) => {
+    return {
+      bechAddress: address.GetBechAddress(),
+      balance: address.GetBalanceMI(),
+    };
+  });
+}
 app.on('ready', createMainWindow);
 
-ipcMain.handle('get/address', async (event, bechAddress) => {
+ipcMain.handle('update/address-list', async (event, bechAddress) => {
   console.log(bechAddress);
   const address: IotaAddress = await addressService.GetAddress(bechAddress);
-  return address;
+  addressList.push(address);
+  return prepareAddressListForRenderer();
 });

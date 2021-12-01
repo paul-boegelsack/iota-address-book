@@ -1,7 +1,6 @@
 <script>
     export let address = {
-        id: 0,
-        txid: "",
+        bechAddress: "",
         balance: 0.00
     };
 </script>
