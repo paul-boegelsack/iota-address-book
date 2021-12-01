@@ -1,12 +1,16 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
+import { SingleNodeClient } from '@iota/iota.js';
+import { MqttClient } from '@iota/mqtt.js';
 
+import { IotaAddressService } from './lib/IotaAddressService';
 import type { IotaAddress } from './lib/IotaAddress';
 
 const isDev: boolean = !app.isPackaged;
-const addressService = new IotaAddressService(
-  'api.lb-0.h.chrysalis-devnet.iota.cafe'
-);
+const NODE_HOST = 'api.lb-0.h.chrysalis-devnet.iota.cafe';
+const nodeClient = new SingleNodeClient(`http://${NODE_HOST}/`);
+const mqttClient = new MqttClient(`mqtt://${NODE_HOST}/`);
+const addressService = new IotaAddressService(nodeClient, mqttClient);
 
 let mainWindow: BrowserWindow;
 
