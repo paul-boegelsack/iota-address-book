@@ -26,7 +26,11 @@
 
 	const addAddress = async () => {
 		const newAddresses = await window.api.UpdateAddressList(addressInput);
-		return newAddresses.map(address => {return {...address, active: true}})
+		return prepareAddresses(newAddresses);
+	}
+
+	const prepareAddresses = (newAddresses) => {
+		return newAddresses.map(address => {return {...address, active: true}});
 	}
 
 	const onInput = (event) => {
@@ -69,9 +73,12 @@
 		addresses = await window.api.DeleteAddressFromList(this.bechAddress)
 	}
 
+	window.api.ListenToAddressesLoaded((event, newAddressList) => {
+		addresses = prepareAddresses(newAddressList);
+	})
+
 	window.api.ListenToBalanceChanges((event, newAddressList) => {
-		const tmpAddressList = newAddressList;
-		addresses = tmpAddressList;
+		addresses = prepareAddresses(newAddressList);
 	})
 
 </script>
