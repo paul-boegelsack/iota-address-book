@@ -12,12 +12,3 @@
     <div class="column is-one-fifth">{address.balance} MI</div>
     <button class="delete" on:click={onDelete.bind({bechAddress: address.bechAddress})}></button>
 </div>
-
-<style>
-    /* .panel-block {
-        display: none;
-    }
-    .panel-block.active {
-        display: flex;
-    } */
-</style>
