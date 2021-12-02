@@ -84,6 +84,7 @@
 	</div>
 	<InputOptions {inputModes} {changeInputMode} />
 	<div class="panel-block columns address-input-panel">
+		<TextInput {onInput} {placeholder} onKeypress={onInputKeypress}  />	
 	</div>
 	<AddressList {onAddressDelete} {addresses} />
 </main>
