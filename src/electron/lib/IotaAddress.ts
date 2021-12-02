@@ -1,29 +1,33 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'events'
+
+export interface BalanceChangeCallback {
+    (): void
+}
 
 export class IotaAddress {
-  private events;
-  constructor(private bechAddress, private balance) {
-    this.events = new EventEmitter();
-  }
+    private events
+    constructor(private bechAddress: string, private balance: number) {
+        this.events = new EventEmitter()
+    }
 
-  GetBechAddress(): string {
-    return this.bechAddress;
-  }
+    GetBechAddress(): string {
+        return this.bechAddress
+    }
 
-  GetBalance(): number {
-    return this.balance;
-  }
+    GetBalance(): number {
+        return this.balance
+    }
 
-  GetBalanceMI() {
-    return (this.balance * 0.000001).toFixed(2);
-  }
+    GetBalanceMI(): string {
+        return (this.balance * 0.000001).toFixed(2)
+    }
 
-  IncreaseBalance(amount: number) {
-    this.balance += amount;
-    this.events.emit('balance-changed', this.balance);
-  }
+    IncreaseBalance(amount: number): void {
+        this.balance += amount
+        this.events.emit('balance-changed', this.balance)
+    }
 
-  ListenToBalanceChange(callback) {
-    this.events.on('balance-changed', () => callback(this));
-  }
+    ListenToBalanceChange(callback: BalanceChangeCallback): void {
+        this.events.on('balance-changed', () => callback())
+    }
 }

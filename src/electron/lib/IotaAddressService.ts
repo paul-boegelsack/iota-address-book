@@ -1,36 +1,26 @@
-import type { SingleNodeClient } from '@iota/iota.js';
-import type { MqttClient } from '@iota/mqtt.js';
+import type { SingleNodeClient } from '@iota/iota.js'
+import type { MqttClient } from '@iota/mqtt.js'
 
-import { IotaAddress } from './IotaAddress';
+import { IotaAddress } from './IotaAddress'
 
 export interface AddressCallback {
-  (amount: number): void;
+    (amount: number): void
 }
 
 export class IotaAddressService {
-  constructor(
-    private nodeClient: SingleNodeClient,
-    private mqttClient: MqttClient
-  ) {}
+    constructor(private nodeClient: SingleNodeClient, private mqttClient: MqttClient) {}
 
-  private listenToAddressBalance(address: IotaAddress) {
-    this.mqttClient.addressOutputs(
-      address.GetBechAddress(),
-      async (topic, data) => {
-        const { amount } = data.output;
-        address.IncreaseBalance(amount);
-      }
-    );
-  }
-
-  async GetAddress(bechAddress: string): Promise<IotaAddress> {
-    try {
-      const { balance } = await this.nodeClient.address(bechAddress);
-      const address = new IotaAddress(bechAddress, balance);
-      this.listenToAddressBalance(address);
-      return address;
-    } catch (error) {
-      console.log(error);
+    private listenToAddressBalance(address: IotaAddress) {
+        this.mqttClient.addressOutputs(address.GetBechAddress(), (topic, data) => {
+            const { amount } = data.output
+            address.IncreaseBalance(amount)
+        })
     }
-  }
+
+    async GetAddress(bechAddress: string): Promise<IotaAddress> {
+        const { balance } = await this.nodeClient.address(bechAddress)
+        const address = new IotaAddress(bechAddress, balance)
+        this.listenToAddressBalance(address)
+        return address
+    }
 }
