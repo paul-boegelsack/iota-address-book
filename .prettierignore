@@ -1,0 +1,5 @@
+.vscode/
+.public/
+node_modules/
+.eslint.rc
+webpack.config.js
