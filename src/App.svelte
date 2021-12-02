@@ -6,10 +6,28 @@
 
 	let addressInput = "";
 	let addresses = []
-	let links = [
-		{name: "Add", active: true},
-		{name: "Search", active: false}
+	let inputModes = [
+		{name: "Add", placeholder: "Enter address", active: true},
+		{name: "Search",  placeholder: "Search for address or balance", active: false}
 	]
+	let activeMode = inputModes[0]
+	let placeholder = activeMode.placeholder;
+
+	const searchAddress = () => {
+        if(addressInput === "" || activeMode.name !== "Search") 
+			return addresses.map(address => {return {...address, active: true}})
+
+        addresses.forEach(address => {
+            address.active = address.bechAddress.includes(addressInput) || 
+                address.balance === addressInput;
+        })
+        return [...addresses];
+    }
+
+	const addAddress = async () => {
+		const newAddresses = await window.api.UpdateAddressList(addressInput);
+		return newAddresses.map(address => {return {...address, active: true}})
+	}
 
 	const onInput = (event) => {
 		addressInput = event.target.value;
@@ -17,18 +35,34 @@
 
 	const onInputKeypress = async (event) => {
 		if(event.charCode === 13){
-			addresses = await window.api.UpdateAddressList(addressInput);
+			switch(activeMode.name){
+				case "Add":
+					addresses = await addAddress();
+					break;
+				case "Search":
+					addresses = searchAddress();
+					break;
+				default:
+					return;
+			}
+			
 		}
 	}
 
-	function activateLink (){
-		links.forEach(link => {
-            if(link.name === this.name)
-                return link.active = true;
+	function changeInputMode (event){
+		event.preventDefault;
+		inputModes.forEach(mode => {
+            if(mode.name === this.name){
+				placeholder = mode.placeholder;
+				mode.active = true;
+				activeMode = mode;
+                return mode
+			}
 
-            return link.active = false;
+            mode.active = false;
+			return mode;
         })
-		links = [...links];
+		inputModes = [...inputModes];
     }
 
 	async function onAddressDelete(){
@@ -48,9 +82,8 @@
 		<span class="mr-3">|</span>
 		<span>ADDRESS BOOK</span>
 	</div>
-	<InputOptions {links} {activateLink} />
-	<div class="panel-block columns">
-		<TextInput {onInput} onKeypress={onInputKeypress} />	
+	<InputOptions {inputModes} {changeInputMode} />
+	<div class="panel-block columns address-input-panel">
 	</div>
 	<AddressList {onAddressDelete} {addresses} />
 </main>
@@ -67,6 +100,11 @@
 		width:5vw;
   		-webkit-mask: url(assets/iota-miota-logo.svg) no-repeat center;
 		mask: url(assets/iota-miota-logo.svg) no-repeat center;
+	}
+
+	.address-input-panel {
+		border-bottom: none !important;
+		margin-bottom: 0 !important;
 	}
 
 	.panel-heading {

@@ -1,12 +1,12 @@
 <script>
     import Link from './common/Link.svelte'
     
-    export let links = [{name: "Link", active: true}]
-    export let activateLink;
+    export let inputModes = [{name: "mode", active: true}]
+    export let changeInputMode;
 </script>
 
 <p class="columns panel-tabs">
-    {#each links as link}
-        <Link {link} {activateLink}/>
+    {#each inputModes as mode}
+        <Link name={mode.name} active={mode.active} activateLink={changeInputMode}/>
     {/each}
 </p>
