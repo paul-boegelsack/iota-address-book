@@ -26,6 +26,9 @@ const errorHelper = new ErrorHelper(errorLogPath)
 const storageHelepr = new AddressStorageHelper(storagePath, addressService)
 let mainWindow: BrowserWindow
 
+/**
+ * Creating main window
+ */
 function createMainWindow(): void {
     try {
         if (fs.existsSync(dir) === false) fs.mkdirSync(dir)
@@ -65,6 +68,10 @@ function createMainWindow(): void {
     }
 }
 
+/**
+ * Extract address values for renderer.
+ * @returns array with IotaAddress objects
+ */
 function prepareAddressListForRenderer() {
     return addressList.map((address) => ({
         bechAddress: address.GetBechAddress(),
@@ -72,15 +79,28 @@ function prepareAddressListForRenderer() {
     }))
 }
 
+/**
+ * Callback function for loading addresses with storage helper. Emits
+ * an event with addresses for the main window.
+ * @param loadedAddresses array with IotaAddress objects from storage
+ */
 function loadedAddresses(loadedAddresses: IotaAddress[]) {
     addressList.push(...loadedAddresses)
     events.emit('loaded-addresses', prepareAddressListForRenderer())
 }
 
+/**
+ * Callback function for balance change. Emits an event with addresses
+ * for the main window.
+ */
 function addressBalanceChanged() {
     events.emit('balance-changed', prepareAddressListForRenderer())
 }
 
+/**
+ * Delets an address object from the addressList array
+ * @param bechAddress bech32 address of the object that will be deleted
+ */
 function deleteFromAddressList(bechAddress: string) {
     let deleteIndex: number
     addressList.forEach((address, index) => {

@@ -1,10 +1,16 @@
 import { contextBridge, ipcRenderer, IpcRenderer, IpcRendererEvent } from 'electron'
 import type { IotaAddress } from './lib/IotaAddress'
 
+/**
+ * Defines a callback for window api events
+ */
 interface AddressListEventCallback {
     (event: IpcRendererEvent, addressList: IotaAddress[]): void
 }
 
+/**
+ * API for communication between main process and renderer
+ */
 export const WINDOW_API = {
     UpdateAddressList: (bechAddress: string): Promise<IotaAddress[]> =>
         ipcRenderer.invoke('update/address-list', bechAddress),
