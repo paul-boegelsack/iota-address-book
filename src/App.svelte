@@ -1,5 +1,6 @@
 <script lang="ts">
 	import 'bulma/css/bulma.css';
+	import '@fortawesome/fontawesome-free/js/all'
 	import TextInput from './components/common/TextInput.svelte'
 	import InputOptions from './components/InputOptions.svelte'
 	import AddressList from './components/AddressList.svelte'
@@ -70,7 +71,8 @@
     }
 
 	async function onAddressDelete(){
-		addresses = await window.api.DeleteAddressFromList(this.bechAddress)
+	async function onAddressCopied(){
+		await window.api.AddressCopied(this.bechAddress)
 	}
 
 	window.api.ListenToAddressesLoaded((event, newAddressList) => {
@@ -93,7 +95,7 @@
 	<div class="panel-block columns address-input-panel">
 		<TextInput {onInput} {placeholder} onKeypress={onInputKeypress}  />	
 	</div>
-	<AddressList {onAddressDelete} {addresses} />
+	<AddressList {onAddressDelete} {onAddressCopied} {addresses} />
 </main>
 
 <style>	

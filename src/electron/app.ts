@@ -3,7 +3,7 @@ import { exit } from 'process'
 import { join } from 'path'
 import { homedir } from 'os'
 import { EventEmitter } from 'events'
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, clipboard } from 'electron'
 import { SingleNodeClient } from '@iota/iota.js'
 import { MqttClient } from '@iota/mqtt.js'
 
@@ -100,6 +100,10 @@ ipcMain.handle('update/address-list', async (event, bechAddress: string) => {
 ipcMain.handle('delete/address-list', (event, bechAddress: string) => {
     deleteFromAddressList(bechAddress)
     return prepareAddressListForRenderer()
+})
+
+ipcMain.handle('copy/address', (event, bechAddress: string) => {
+    clipboard.writeText(bechAddress)
 })
 
 app.on('ready', createMainWindow)
