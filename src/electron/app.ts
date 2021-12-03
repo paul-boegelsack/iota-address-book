@@ -85,7 +85,7 @@ ipcMain.handle('update/address-list', async (event, bechAddress: string) => {
     const address: IotaAddress = await addressService.GetAddress(bechAddress)
     address.ListenToBalanceChange(addressBalanceChanged)
     addressList.push(address)
-    storageHelepr.UpdateStorage(addressList)
+    await storageHelepr.UpdateStorage(addressList)
     return prepareAddressListForRenderer()
 })
 
