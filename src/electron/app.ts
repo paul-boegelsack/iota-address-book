@@ -41,7 +41,11 @@ function createMainWindow(): void {
     mainWindow.loadFile(join(__dirname, '../index.html')).catch((error: Error) => {
         errorHelper.HandleError(error)
     })
-    mainWindow.on('ready-to-show', () => mainWindow.show())
+        mainWindow.on('ready-to-show', () => {
+            mainWindow.show()
+            storageHelepr.AddresLoadListener(loadedAddresses)
+            storageHelepr.LoadAddresses().catch((error: Error) => errorHelper.HandleError(error))
+        })
 
     events.on('balance-changed', (addressList) => {
         mainWindow.webContents.send('event/balance-update', addressList)
