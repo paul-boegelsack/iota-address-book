@@ -1,5 +1,5 @@
 import { writeFile } from 'fs/promises'
-import { createReadStream } from 'fs'
+import { createReadStream, existsSync } from 'fs'
 import readLine from 'readline'
 import EventEmitter from 'events'
 
@@ -28,6 +28,10 @@ export class AddressStorageHelper {
 
     async LoadAddresses(): Promise<void> {
         const addressPromises = []
+        if (existsSync(this.storagePath) === false) {
+            this.events.emit('address-list-loaded', [])
+            return
+        }
         const readStream = createReadStream(this.storagePath)
         const rl = readLine.createInterface({
             input: readStream,
