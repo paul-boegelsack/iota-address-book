@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import { exit } from 'process'
 import { join } from 'path'
 import { homedir } from 'os'
 import { EventEmitter } from 'events'
@@ -7,9 +8,9 @@ import { SingleNodeClient } from '@iota/iota.js'
 import { MqttClient } from '@iota/mqtt.js'
 
 import { IotaAddressService } from './lib/IotaAddressService'
-import type { IotaAddress } from './lib/IotaAddress'
 import { ErrorHelper } from './lib/helper/ErrorHelper'
 import { AddressStorageHelper } from './lib/helper/StorageHelper'
+import type { IotaAddress } from './lib/IotaAddress'
 
 const isDev: boolean = !app.isPackaged
 const events = new EventEmitter()
@@ -17,45 +18,44 @@ const NODE_HOST = 'api.lb-0.h.chrysalis-devnet.iota.cafe'
 const nodeClient = new SingleNodeClient(`http://${NODE_HOST}/`)
 const mqttClient = new MqttClient(`mqtt://${NODE_HOST}/`)
 const addressService = new IotaAddressService(nodeClient, mqttClient)
-
-let mainWindow: BrowserWindow
 const addressList: IotaAddress[] = []
 const dir = join(`${homedir}`, '.iotaAB')
-const storagePath = join(`${dir}`, 'storage.json')
+const storagePath = join(`${dir}`, 'storage.txt')
 const errorLogPath = join(`${dir}`, 'error.log')
 const errorHelper = new ErrorHelper(errorLogPath)
 const storageHelepr = new AddressStorageHelper(storagePath, addressService)
+let mainWindow: BrowserWindow
 
 function createMainWindow(): void {
     try {
-    if (fs.existsSync(dir) === false) fs.mkdirSync(dir)
-    mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
-        show: false,
-        autoHideMenuBar: true,
-        webPreferences: {
-            preload: join(__dirname, './bridge.js'),
-        },
-    })
+        if (fs.existsSync(dir) === false) fs.mkdirSync(dir)
+        mainWindow = new BrowserWindow({
+            width: 800,
+            height: 600,
+            show: false,
+            autoHideMenuBar: true,
+            webPreferences: {
+                preload: join(__dirname, './bridge.js'),
+            },
+        })
 
-    mainWindow.loadFile(join(__dirname, '../index.html')).catch((error: Error) => {
-        errorHelper.HandleError(error)
-    })
+        mainWindow.loadFile(join(__dirname, '../index.html')).catch((error: Error) => {
+            errorHelper.HandleError(error)
+        })
         mainWindow.on('ready-to-show', () => {
             mainWindow.show()
             storageHelepr.AddresLoadListener(loadedAddresses)
             storageHelepr.LoadAddresses().catch((error: Error) => errorHelper.HandleError(error))
         })
 
-    events.on('balance-changed', (addressList) => {
-        mainWindow.webContents.send('event/balance-update', addressList)
-    })
-    events.on('loaded-addresses', (addressList) => {
-        mainWindow.webContents.send('event/loaded-addresses', addressList)
-    })
+        events.on('balance-changed', (addressList) => {
+            mainWindow.webContents.send('event/balance-update', addressList)
+        })
+        events.on('loaded-addresses', (addressList) => {
+            mainWindow.webContents.send('event/loaded-addresses', addressList)
+        })
 
-    if (isDev) mainWindow.webContents.openDevTools()
+        if (isDev) mainWindow.webContents.openDevTools()
     } catch (error: unknown) {
         if (error instanceof Error) {
             errorHelper.HandleError(error)
@@ -64,8 +64,6 @@ function createMainWindow(): void {
         exit(1)
     }
 }
-
-app.on('ready', createMainWindow)
 
 function prepareAddressListForRenderer() {
     return addressList.map((address) => ({
@@ -103,3 +101,5 @@ ipcMain.handle('delete/address-list', (event, bechAddress: string) => {
     deleteFromAddressList(bechAddress)
     return prepareAddressListForRenderer()
 })
+
+app.on('ready', createMainWindow)
