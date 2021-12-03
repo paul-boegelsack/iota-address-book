@@ -1,5 +1,6 @@
 .vscode/
 .public/
 node_modules/
+build-packages/
 .eslint.rc
 webpack.config.js
