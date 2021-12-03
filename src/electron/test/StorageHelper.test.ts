@@ -36,5 +36,12 @@ describe('AddressStorageHelper Integration', () => {
             })
             .catch(() => {})
     }, 10000)
-    test('should load addresses from storage file', () => {})
+    test('should return an empty array while loading if no storage file exists', (done) => {
+        const callback = (list: IotaAddress[]) => {
+            expect(list.length).toBe(0)
+            done()
+        }
+        helper.AddresLoadListener(callback)
+        helper.LoadAddresses().catch(() => {})
+    })
 })
