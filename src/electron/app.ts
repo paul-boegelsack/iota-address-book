@@ -27,6 +27,7 @@ const errorHelper = new ErrorHelper(errorLogPath)
 const storageHelepr = new AddressStorageHelper(storagePath, addressService)
 
 function createMainWindow(): void {
+    try {
     if (fs.existsSync(dir) === false) fs.mkdirSync(dir)
     mainWindow = new BrowserWindow({
         width: 800,
@@ -55,9 +56,13 @@ function createMainWindow(): void {
     })
 
     if (isDev) mainWindow.webContents.openDevTools()
-
-    storageHelepr.AddresLoadListener(loadedAddresses)
-    storageHelepr.LoadAddresses().catch((error: Error) => errorHelper.HandleError(error))
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            errorHelper.HandleError(error)
+            return
+        }
+        exit(1)
+    }
 }
 
 app.on('ready', createMainWindow)
