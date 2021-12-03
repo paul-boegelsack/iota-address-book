@@ -66,7 +66,8 @@ function prepareAddressListForRenderer() {
 }
 
 function loadedAddresses(loadedAddresses: IotaAddress[]) {
-    events.emit('loaded-addresses', loadedAddresses)
+    addressList.push(...loadedAddresses)
+    events.emit('loaded-addresses', prepareAddressListForRenderer())
 }
 
 function addressBalanceChanged() {
