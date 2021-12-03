@@ -37,6 +37,7 @@
         "test": "jest --detectOpenHandles"
     },
     "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.15.4",
         "@iota/iota.js": "^1.8.2",
         "@iota/mqtt.js": "^1.8.2",
         "bulma": "^0.9.3",
