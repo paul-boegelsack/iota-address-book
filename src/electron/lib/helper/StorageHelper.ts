@@ -1,8 +1,10 @@
-import * as fs from 'fs'
+import { writeFile } from 'fs/promises'
+import { createReadStream } from 'fs'
+import readLine from 'readline'
 import EventEmitter from 'events'
+
 import type { IotaAddress } from '../IotaAddress'
 import type { IotaAddressService } from '../IotaAddressService'
-import readLine from 'readline'
 
 export interface AddressLoaderCallback {
     (addressList: IotaAddress[]): void
@@ -15,35 +17,30 @@ export class AddressStorageHelper {
         this.events = new EventEmitter()
     }
 
-    UpdateStorage(addressList: IotaAddress[]): void {
-        fs.writeFile(this.storagePath, '', (error) => {
-            if (error) throw error
-            let addressString = ''
-            addressList.forEach((address) => {
-                addressString += `${address.GetBechAddress()}\n`
-            })
-            fs.writeFile(this.storagePath, addressString, (error) => {
-                if (error) throw error
-            })
+    async UpdateStorage(addressList: IotaAddress[]): Promise<void> {
+        let addressString = ''
+        await writeFile(this.storagePath, '')
+        addressList.forEach((address) => {
+            addressString += `${address.GetBechAddress()}\n`
         })
+        await writeFile(this.storagePath, addressString)
     }
 
     async LoadAddresses(): Promise<void> {
-        const addressList = []
         const addressPromises = []
-        const readStream = fs.createReadStream(this.storagePath)
+        const readStream = createReadStream(this.storagePath)
         const rl = readLine.createInterface({
             input: readStream,
         })
         for await (const line of rl) {
             addressPromises.push(this.addressService.GetAddress(line))
         }
-        addressList.push(Promise.all(addressPromises))
+        const addressList = await Promise.all(addressPromises)
         this.events.emit('address-list-loaded', addressList)
     }
 
     AddresLoadListener(callback: AddressLoaderCallback): void {
-        this.events.on('address-list-loader', (addressList: IotaAddress[]) => {
+        this.events.on('address-list-loaded', (addressList: IotaAddress[]) => {
             callback(addressList)
         })
     }
