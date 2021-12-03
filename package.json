@@ -34,9 +34,11 @@
     "scripts": {
         "start": "cross-env NODE_ENV=development webpack --watch",
         "start:prod": "npm run build && cross-env NODE_ENV=development electron public/build/app.js",
-        "build": "lint && cross-env NODE_ENV=production webpack",
+        "build": "npm run lint && cross-env NODE_ENV=production webpack",
+        "package": "rimraf IotaAddressBook-* && electron-packager . --platfrom=darwin,win32 --arch=x64 --icon=icon --out ./build-packages",
+        "build:package": "npm run build && npm run package",
         "lint": "eslint . --cache",
-        "test": "jest --detectOpenHandles"
+        "test": "jest"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.4",
