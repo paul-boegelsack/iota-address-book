@@ -97,8 +97,9 @@ ipcMain.handle('update/address-list', async (event, bechAddress: string) => {
     return prepareAddressListForRenderer()
 })
 
-ipcMain.handle('delete/address-list', (event, bechAddress: string) => {
+ipcMain.handle('delete/address-list', async (event, bechAddress: string) => {
     deleteFromAddressList(bechAddress)
+    await storageHelepr.UpdateStorage(addressList)
     return prepareAddressListForRenderer()
 })
 
