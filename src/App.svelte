@@ -71,6 +71,10 @@
     }
 
 	async function onAddressDelete(){
+		const newAddresses = await window.api.DeleteAddressFromList(this.bechAddress)
+		addresses = prepareAddresses(newAddresses)
+	}
+
 	async function onAddressCopied(){
 		await window.api.AddressCopied(this.bechAddress)
 	}
