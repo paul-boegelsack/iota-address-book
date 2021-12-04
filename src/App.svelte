@@ -12,6 +12,14 @@
 	let addressInput: string = '';
 	let addresses: Address[] = []
 
+	const checkInput = () => {
+		if(addressInput.length != 64) return false;
+		const reg = /[iota]{4}[a-z0-9]{60}/g
+		const match = addressInput.match(reg);
+		if(match) return true;
+		return false;
+	}
+
 	const prepareAddresses = (newAddresses) => newAddresses.map(address => {
 		let active = true;
 		const exists = addresses.find(oldAddress => oldAddress.bechAddress === address.bechAddress)
@@ -31,6 +39,7 @@
     }
 
 	const addAddress: ModeFunction = async () => {
+		if(checkInput() === false) return addresses;
 		const newAddresses = await window.api.UpdateAddressList(addressInput);
 		return prepareAddresses(newAddresses);
 	}
