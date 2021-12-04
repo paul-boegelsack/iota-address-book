@@ -28,13 +28,13 @@
 	});
 
 	const searchAddress: ModeFunction = () => new Promise((resolve) => {
-        if(addressInput === '')
+		if(addressInput === '')
 			resolve(addresses.map(address =>  ({...address, active: true})))
 
-        addresses.forEach(address => {
-            address.active = address.bechAddress.includes(addressInput) || 
-                address.balance === addressInput;
-        })
+		addresses.forEach(address => {
+			address.active = address.bechAddress.includes(addressInput) ||
+				address.balance === addressInput;
+		})
 		resolve([...addresses]);
 	})
 
