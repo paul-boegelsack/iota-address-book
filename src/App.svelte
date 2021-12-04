@@ -1,9 +1,10 @@
 <script lang="ts">
-	import 'bulma/css/bulma.css';
+	import 'bulma/css/bulma.css'
 	import '@fortawesome/fontawesome-free/js/all'
 
 	import type { Address } from './lib/interfaces/address'
 	import { InputMode, ModeFunction } from './lib/InputMode'
+	import Header from './components/Header.svelte'
 	import TextInput from './components/common/TextInput.svelte'
 	import InputModes from './components/InputModes.svelte'
 	import AddressList from './components/AddressList.svelte'
@@ -35,6 +36,8 @@
 	let inputModes = [addMode, searchMode]
 	let activeMode = addMode
 	let placeholder = activeMode.GetPlaceholder();
+
+	function onInput(event) {
 		addressInput = event.target.value;
 	}
 
@@ -72,37 +75,17 @@
 		addresses = prepareAddresses(newAddressList);
 	})
 
-	window.api.ListenToBalanceChanges((event, newAddressList) => {
+	window.api.ListenToBalanceChanged((event, newAddressList) => {
 		addresses = prepareAddresses(newAddressList);
 	})
 
 </script>
-
-<main class="panel m-1">
-	<div class="panel-heading columns">
-		<div class="logo mr-2" alt="iota logo"></div> 
-		<span class="mr-3">|</span>
-		<span>ADDRESS BOOK</span>
-	</div>
-	<InputOptions {inputModes} {changeInputMode} />
-	<div class="panel-block columns address-input-panel">
-		<TextInput {onInput} {placeholder} onKeypress={onInputKeypress}  />	
-	</div>
-	<AddressList {onAddressDelete} {onAddressCopied} {addresses} />
-</main>
 
 <style>	
 	main {
 		text-align: center;
 		padding: 1em;
 		margin: 0 auto;
-	}
-
-	.logo {
-  		background-color: white;
-    	width: 5vw;
-    	-webkit-mask: url('./assets/iota-miota-logo.svg') no-repeat center;
-    	mask: url('./assets/iota-miota-logo.svg') no-repeat center;
 	}
 
 	.address-input-panel {
@@ -116,6 +99,10 @@
 	}
 </style>
 
+<main class="panel m-1">
+	<div class="panel-heading columns">
+		<Header />
+	</div>
 	<div class="columns panel-tabs">
 		<InputModes {inputModes} {onChangeInputMode} />
 	</div>
