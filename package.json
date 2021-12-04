@@ -13,6 +13,7 @@
         "cross-env": "^7.0.3",
         "css-loader": "^5.0.1",
         "electron": "^16.0.2",
+        "electron-builder": "^22.14.5",
         "electron-packager": "^15.4.0",
         "eslint": "^8.3.0",
         "eslint-plugin-svelte3": "^3.2.1",
@@ -35,8 +36,8 @@
         "start": "cross-env NODE_ENV=development webpack --watch",
         "start:prod": "npm run build && cross-env NODE_ENV=development electron public/build/app.js",
         "build": "npm run lint && cross-env NODE_ENV=production webpack",
-        "package": "rimraf IotaAddressBook-* && electron-packager . --platfrom=darwin,win32 --arch=x64 --icon=icon --out ./build-packages",
-        "build:package": "npm run build && npm run package",
+        "compile:mac": "electron-builder --mac --x64",
+        "compile:win": "electron-builder --win --x64",
         "lint": "eslint . --cache",
         "test": "jest"
     },
@@ -46,5 +47,62 @@
         "@iota/mqtt.js": "^1.8.2",
         "bulma": "^0.9.3",
         "electron-reload": "^2.0.0-alpha.1"
+    },
+    "build": {
+        "productName": "IOTA AddressBook",
+        "artifactName": "IOTA-AddressBook-${version}.${ext}",
+        "directories": {
+            "buildResources": "./public",
+            "output": "./out"
+        },
+        "files": [
+            "public/",
+            "package.json"
+        ],
+        "extraResources": [
+            {
+                "from": "./public/assets",
+                "to": "../assets"
+            }
+        ],
+        "appId": "com.address.book",
+        "dmg": {
+            "iconSize": 120,
+            "title": "${productName}",
+            "sign": false,
+            "contents": [
+                {
+                    "x": 500,
+                    "y": 250,
+                    "type": "link",
+                    "path": "/Applications"
+                },
+                {
+                    "x": 170,
+                    "y": 250,
+                    "type": "file"
+                }
+            ]
+        },
+        "nsis": {
+            "deleteAppDataOnUninstall": false
+        },
+        "win": {
+            "icon": "./public/assets/icons/win/icon.ico",
+            "publisherName": "Paul Boegelsack",
+            "target": "nsis",
+            "timeStampServer": "http://timestamp.digicert.com"
+        },
+        "mac": {
+            "icon": "./public/assets/icons/mac/icon.icns",
+            "category": "public.app-category.finance",
+            "target": [
+                "dmg"
+            ],
+            "entitlements": "./entitlements.mac.plist",
+            "entitlementsInherit": "./entitlements.mac.plist",
+            "hardenedRuntime": true,
+            "gatekeeperAssess": false
+        }
     }
 }
