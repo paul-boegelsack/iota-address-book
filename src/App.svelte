@@ -108,9 +108,9 @@
 
 	.logo {
   		background-color: white;
-		width:5vw;
-  		-webkit-mask: url(assets/iota-miota-logo.svg) no-repeat center;
-		mask: url(assets/iota-miota-logo.svg) no-repeat center;
+    	width: 5vw;
+    	-webkit-mask: url('./assets/iota-miota-logo.svg') no-repeat center;
+    	mask: url('./assets/iota-miota-logo.svg') no-repeat center;
 	}
 
 	.address-input-panel {
