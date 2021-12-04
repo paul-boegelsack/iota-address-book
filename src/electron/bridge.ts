@@ -19,7 +19,7 @@ export const WINDOW_API = {
     AddressCopied: (bechAddress: string): Promise<unknown> => ipcRenderer.invoke('copy/address', bechAddress),
     ListenToAddressesLoaded: (callback: AddressListEventCallback): IpcRenderer =>
         ipcRenderer.on('event/loaded-addresses', callback),
-    ListenToBalanceChanges: (callback: AddressListEventCallback): IpcRenderer =>
+    ListenToBalanceChanged: (callback: AddressListEventCallback): IpcRenderer =>
         ipcRenderer.on('event/balance-update', callback),
 }
 
