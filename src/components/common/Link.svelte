@@ -1,6 +1,6 @@
 <script>
-    export let name = "Link"; 
-    export let target = "#"; 
+    export let name = 'Link';
+    export let target = '#';
     export let active = true;
     export let activateLink;
 </script>

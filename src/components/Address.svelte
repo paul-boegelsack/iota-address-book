@@ -1,6 +1,6 @@
 <script>
     export let address = {
-        bechAddress: "",
+        bechAddress: '',
         balance: 0.00,
         active: true
     };

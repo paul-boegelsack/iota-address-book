@@ -5,18 +5,18 @@
 	import InputOptions from './components/InputOptions.svelte'
 	import AddressList from './components/AddressList.svelte'
 
-	let addressInput = "";
+	let addressInput = '';
 	let addresses = []
 	let inputModes = [
-		{name: "Add", placeholder: "Enter address", active: true},
-		{name: "Search",  placeholder: "Search for address or balance", active: false}
+		{name: 'Add', placeholder: 'Enter address', active: true},
+		{name: 'Search',  placeholder: 'Search for address or balance', active: false}
 	]
 	let activeMode = inputModes[0]
 	let placeholder = activeMode.placeholder;
 
 	const searchAddress = () => {
-        if(addressInput === "" || activeMode.name !== "Search") 
-			return addresses.map(address => {return {...address, active: true}})
+        if(addressInput === '' || activeMode.name !== 'Search')
+			return addresses.map(address =>  ({...address, active: true}))
 
         addresses.forEach(address => {
             address.active = address.bechAddress.includes(addressInput) || 
@@ -30,9 +30,7 @@
 		return prepareAddresses(newAddresses);
 	}
 
-	const prepareAddresses = (newAddresses) => {
-		return newAddresses.map(address => {return {...address, active: true}});
-	}
+	const prepareAddresses = (newAddresses) => newAddresses.map(address => ({...address, active: true}));
 
 	const onInput = (event) => {
 		addressInput = event.target.value;
@@ -41,16 +39,15 @@
 	const onInputKeypress = async (event) => {
 		if(event.charCode === 13){
 			switch(activeMode.name){
-				case "Add":
+				case 'Add':
 					addresses = await addAddress();
 					break;
-				case "Search":
+				case 'Search':
 					addresses = searchAddress();
 					break;
 				default:
 					return;
 			}
-			
 		}
 	}
 
@@ -71,12 +68,12 @@
     }
 
 	async function onAddressDelete(){
-		const newAddresses = await window.api.DeleteAddressFromList(this.bechAddress)
+		const newAddresses = await window.api.DeleteAddressFromList(<string> this.bechAddress)
 		addresses = prepareAddresses(newAddresses)
 	}
 
 	async function onAddressCopied(){
-		await window.api.AddressCopied(this.bechAddress)
+		await window.api.AddressCopied(<string> this.bechAddress)
 	}
 
 	window.api.ListenToAddressesLoaded((event, newAddressList) => {

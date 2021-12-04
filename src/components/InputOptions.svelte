@@ -1,7 +1,7 @@
 <script>
     import Link from './common/Link.svelte'
     
-    export let inputModes = [{name: "mode", active: true}]
+    export let inputModes = [{name: 'mode', active: true}]
     export let changeInputMode;
 </script>
 
