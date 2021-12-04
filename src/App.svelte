@@ -1,21 +1,20 @@
 <script lang="ts">
 	import 'bulma/css/bulma.css';
 	import '@fortawesome/fontawesome-free/js/all'
+
+	import type { Address } from './lib/interfaces/address'
+	import { InputMode, ModeFunction } from './lib/InputMode'
 	import TextInput from './components/common/TextInput.svelte'
-	import InputOptions from './components/InputOptions.svelte'
+	import InputModes from './components/InputModes.svelte'
 	import AddressList from './components/AddressList.svelte'
 
-	let addressInput = '';
-	let addresses = []
-	let inputModes = [
-		{name: 'Add', placeholder: 'Enter address', active: true},
-		{name: 'Search',  placeholder: 'Search for address or balance', active: false}
-	]
-	let activeMode = inputModes[0]
-	let placeholder = activeMode.placeholder;
+	let addressInput: string = '';
+	let addresses: Address[] = []
 
-	const searchAddress = () => {
-        if(addressInput === '' || activeMode.name !== 'Search')
+	const prepareAddresses = (newAddresses) => newAddresses.map(address => ({...address, active: true}));
+
+	const searchAddress: ModeFunction = async () => {
+        if(addressInput === '')
 			return addresses.map(address =>  ({...address, active: true}))
 
         addresses.forEach(address => {
@@ -25,47 +24,40 @@
         return [...addresses];
     }
 
-	const addAddress = async () => {
+	const addAddress: ModeFunction = async () => {
 		const newAddresses = await window.api.UpdateAddressList(addressInput);
 		return prepareAddresses(newAddresses);
 	}
 
-	const prepareAddresses = (newAddresses) => newAddresses.map(address => ({...address, active: true}));
+	const addMode = new InputMode('Add', 'Enter address', true, addAddress)
+	const searchMode = new InputMode('Search', 'Search for address or balance', false, searchAddress)
 
-	const onInput = (event) => {
+	let inputModes = [addMode, searchMode]
+	let activeMode = addMode
+	let placeholder = activeMode.GetPlaceholder();
 		addressInput = event.target.value;
 	}
 
-	const onInputKeypress = async (event) => {
-		if(event.charCode === 13){
-			switch(activeMode.name){
-				case 'Add':
-					addresses = await addAddress();
-					break;
-				case 'Search':
-					addresses = searchAddress();
-					break;
-				default:
-					return;
-			}
-		}
-	}
-
-	function changeInputMode (event){
+	function onChangeInputMode (event){
 		event.preventDefault;
 		inputModes.forEach(mode => {
-            if(mode.name === this.name){
-				placeholder = mode.placeholder;
-				mode.active = true;
+            if(mode.GetName() === this.name){
+				placeholder = mode.GetPlaceholder();
+				mode.SetActive(true);
 				activeMode = mode;
                 return mode
 			}
 
-            mode.active = false;
+            mode.SetActive(false);
 			return mode;
         })
 		inputModes = [...inputModes];
     }
+
+	async function onInputKeypress (event) {
+		if(event.charCode !== 13) return;
+			addresses = await activeMode.ModeFunction();
+	}
 
 	async function onAddressDelete(){
 		const newAddresses = await window.api.DeleteAddressFromList(<string> this.bechAddress)
@@ -123,3 +115,12 @@
 		background-color: #131f37;
 	}
 </style>
+
+	<div class="columns panel-tabs">
+		<InputModes {inputModes} {onChangeInputMode} />
+	</div>
+	<div class="panel-block columns address-input-panel">
+		<TextInput {onInput} {placeholder} onKeypress={onInputKeypress}  />	
+	</div>
+	<AddressList {onAddressDelete} {onAddressCopied} {addresses} />
+</main>
