@@ -85,6 +85,7 @@
 	main {
 		text-align: center;
 		padding: 1em;
+		padding-bottom: 0;
 		margin: 0 auto;
 	}
 
