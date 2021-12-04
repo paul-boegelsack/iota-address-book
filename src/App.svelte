@@ -27,16 +27,16 @@
 		return {...address, active}
 	});
 
-	const searchAddress: ModeFunction = async () => {
+	const searchAddress: ModeFunction = () => new Promise((resolve) => {
         if(addressInput === '')
-			return addresses.map(address =>  ({...address, active: true}))
+			resolve(addresses.map(address =>  ({...address, active: true})))
 
         addresses.forEach(address => {
             address.active = address.bechAddress.includes(addressInput) || 
                 address.balance === addressInput;
         })
-        return [...addresses];
-    }
+		resolve([...addresses]);
+	})
 
 	const addAddress: ModeFunction = async () => {
 		if(checkInput() === false) return addresses;
