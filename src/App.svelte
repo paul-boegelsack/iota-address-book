@@ -12,7 +12,12 @@
 	let addressInput: string = '';
 	let addresses: Address[] = []
 
-	const prepareAddresses = (newAddresses) => newAddresses.map(address => ({...address, active: true}));
+	const prepareAddresses = (newAddresses) => newAddresses.map(address => {
+		let active = true;
+		const exists = addresses.find(oldAddress => oldAddress.bechAddress === address.bechAddress)
+		if(exists) active = exists.active;
+		return {...address, active}
+	});
 
 	const searchAddress: ModeFunction = async () => {
         if(addressInput === '')
