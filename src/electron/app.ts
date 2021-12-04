@@ -110,6 +110,9 @@ function deleteFromAddressList(bechAddress: string) {
 }
 
 ipcMain.handle('update/address-list', async (event, bechAddress: string) => {
+    const exists = addressList.find((address) => address.GetBechAddress() === bechAddress)
+    if (exists) return prepareAddressListForRenderer()
+
     const address: IotaAddress = await addressService.GetAddress(bechAddress)
     address.ListenToBalanceChange(addressBalanceChanged)
     addressList.push(address)
