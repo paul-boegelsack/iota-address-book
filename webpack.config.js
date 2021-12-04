@@ -1,8 +1,5 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const ElectronReloadPlugin = require('webpack-electron-reload')({
-  path: path.join(__dirname, './public/build/app.js'),
-});
 const sveltePreprocess = require('svelte-preprocess');
 
 const mode = process.env.NODE_ENV || 'development';
@@ -44,7 +41,12 @@ const rules = [
   },
   {
     test: /\.css$/,
-    use: [MiniCssExtractPlugin.loader, 'css-loader'],
+    use: [MiniCssExtractPlugin.loader, {
+      loader: 'css-loader',
+      options: {
+        url: false
+      },
+    }],
   },
   {
     // required to prevent errors from Svelte on Webpack 5+
@@ -52,7 +54,7 @@ const rules = [
     resolve: {
       fullySpecified: false,
     },
-  },
+  }
 ];
 
 const plugins = [
@@ -60,8 +62,6 @@ const plugins = [
     filename: '[name].css',
   }),
 ];
-
-if (!prod) plugins.push(ElectronReloadPlugin());
 
 module.exports = {
   target: 'electron-main',
