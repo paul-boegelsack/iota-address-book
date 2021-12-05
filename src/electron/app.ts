@@ -14,7 +14,7 @@ import type { IotaAddress } from './lib/IotaAddress'
 
 const isDev: boolean = !app.isPackaged
 const events = new EventEmitter()
-const NODE_HOST = 'api.lb-0.h.chrysalis-devnet.iota.cafe'
+const NODE_HOST = isDev ? 'api.lb-0.h.chrysalis-devnet.iota.cafe' : 'chrysalis-nodes.iota.org'
 const nodeClient = new SingleNodeClient(`http://${NODE_HOST}/`)
 const mqttClient = new MqttClient(`mqtt://${NODE_HOST}/`)
 const addressService = new IotaAddressService(nodeClient, mqttClient)
@@ -153,6 +153,9 @@ function prepareAddressListForRenderer() {
  * @param loadedAddresses array with IotaAddress objects from storage
  */
 function loadedAddresses(loadedAddresses: IotaAddress[]) {
+    loadedAddresses.forEach((address) => {
+        address.ListenToBalanceChange(addressBalanceChanged)
+    })
     addressList.push(...loadedAddresses)
     events.emit('loaded-addresses', prepareAddressListForRenderer())
 }
