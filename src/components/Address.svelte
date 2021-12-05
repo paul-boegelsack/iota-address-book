@@ -11,6 +11,8 @@
 <style>
     .address {
         overflow: hidden !important;
+        text-overflow: ellipsis;
+        text-align: left;
     }
     .copy {
         color: rgba(10, 10, 10, 0.2)
@@ -21,7 +23,7 @@
     }
 </style>
 
-<div id={address.bechAddress} class="address column is-flex is-align-content-flex-start is-three-fifth">
+<div id={address.bechAddress} class="address column is-three-fifth">
     {address.bechAddress}
 </div>
 <span class="copy icon ml-3" on:click={onCopy.bind({bechAddress: address.bechAddress})}>

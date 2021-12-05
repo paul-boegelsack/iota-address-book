@@ -123,6 +123,7 @@
 	.panel-heading {
 		color: white;
 		background-color: #131f37;
+		display: flex !important
 	}
 </style>
 

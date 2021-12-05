@@ -6,6 +6,12 @@
 </script>
 
 <style>
+    a {
+        color: #131f3788;
+    }
+    a.active {
+        color: #131f37
+    }
     a:focus{
         outline:none;
     }
