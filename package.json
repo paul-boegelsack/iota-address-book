@@ -21,6 +21,7 @@
         "svelte": "^3.31.2",
         "svelte-check": "^1.0.46",
         "svelte-loader": "^3.0.0",
+        "svelte-loading-spinners": "^0.1.7",
         "svelte-preprocess": "^4.3.0",
         "ts-jest": "^27.0.7",
         "ts-loader": "^8.0.4",

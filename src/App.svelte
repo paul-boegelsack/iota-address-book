@@ -1,6 +1,7 @@
 <script lang="ts">
 	import 'bulma/css/bulma.css'
 	import '@fortawesome/fontawesome-free/js/all'
+	import { DoubleBounce } from 'svelte-loading-spinners'
 
 	import type { Address } from './lib/interfaces/address'
 	import { InputMode, ModeFunction } from './lib/InputMode'
@@ -11,6 +12,7 @@
 
 	let addressInput: string = '';
 	let addresses: Address[] = []
+	let spinnerActive = true;
 
 	const checkInput = () => {
 		if(addressInput.length != 64) return false;
@@ -76,17 +78,23 @@
     }
 
 	async function onInputKeypress (event) {
-		if(event.charCode === 13)
-			addresses = await activeMode.ModeFunction();
+		if(event.charCode !== 13) return;
+		spinnerActive = true;
+		addresses = await activeMode.ModeFunction();
+		spinnerActive = false;
 	}
 
 	async function onAddressDelete(){
+		spinnerActive = true;
 		const newAddresses = await window.api.DeleteAddressFromList(<string> this.bechAddress)
 		addresses = prepareAddresses(newAddresses)
+		spinnerActive = false;
 	}
 
 	async function onAddressCopied(){
+		spinnerActive = true;
 		await window.api.AddressCopied(<string> this.bechAddress)
+		spinnerActive = false;
 	}
 
 	window.api.ListenToAddModeSet(() => {
@@ -99,6 +107,7 @@
 
 	window.api.ListenToAddressesLoaded((event, newAddressList) => {
 		addresses = prepareAddresses(newAddressList);
+		spinnerActive = false;
 	})
 
 	window.api.ListenToBalanceChanged((event, newAddressList) => {
@@ -113,6 +122,20 @@
 		padding: 1em;
 		padding-bottom: 0;
 		margin: 0 auto;
+	}
+
+	.spinner-wrapper{
+		opacity: 0;
+		position: fixed;
+  		top: 50%;
+  		left: 50%;
+  		transform: translate(-50%, -50%);
+		transition: opacity 1s;
+	}
+
+	.spinner-wrapper.active{
+		opacity: 1;
+		transition: opacity 1s;
 	}
 
 	.address-input-panel {
@@ -139,3 +162,6 @@
 	</div>
 	<AddressList {onAddressDelete} {onAddressCopied} {addresses} />
 </main>
+<div class="spinner-wrapper" class:active={spinnerActive}>
+	<DoubleBounce size="60" color="#131f37" unit="px" duration="1s"></DoubleBounce>
+</div>
