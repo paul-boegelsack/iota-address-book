@@ -73,11 +73,10 @@
 	function onChangeInputMode (event){
 		event.preventDefault;
 		changeInputMode(this.name)
-		
     }
 
 	async function onInputKeypress (event) {
-		if(event.charCode !== 13) return;
+		if(event.charCode === 13)
 			addresses = await activeMode.ModeFunction();
 	}
 
@@ -90,11 +89,11 @@
 		await window.api.AddressCopied(<string> this.bechAddress)
 	}
 
-	window.api.ListenToAddModeSet(function() {
+	window.api.ListenToAddModeSet(() => {
 		changeInputMode('Add')
 	})
 
-	window.api.ListenToSearchModeSet(function() {
+	window.api.ListenToSearchModeSet(() => {
 		changeInputMode('Search');
 	})
 

@@ -69,7 +69,7 @@ describe('IotaNodeService Integration', () => {
         expect(address.GetBalance()).toBe(200000)
     })
 
-    test.only('should return an error if no address was found', async () => {
+    test('should return an error if no address was found', async () => {
         await expect(service.GetAddress()).rejects.toEqual(new Error('address/undefined'))
         await expect(
             service.GetAddress('atoithisisatest70zsa9fn5t98mnt2zsstlert0wd20uesk0h4thz0123456789')
@@ -85,7 +85,7 @@ function generateBechAddress() {
         addressIndex: 0,
         isInternal: false,
     }
-    const path = generateBip44Address(addressGeneratorAccountState, true)
+    const path = generateBip44Address(addressGeneratorAccountState)
     const addressSeed = baseSeed.generateSeedFromPath(new Bip32Path(path))
     const addressKeyPair = addressSeed.keyPair()
     const indexEd25519Address = new Ed25519Address(addressKeyPair.publicKey)
