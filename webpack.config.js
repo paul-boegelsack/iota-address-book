@@ -1,8 +1,5 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const ElectronReloadPlugin = require('webpack-electron-reload')({
-  path: path.join(__dirname, './public/build/app.js'),
-});
 const sveltePreprocess = require('svelte-preprocess');
 
 const mode = process.env.NODE_ENV || 'development';
@@ -17,9 +14,10 @@ const resolve = {
 };
 
 const output = {
-  path: path.join(__dirname, '/public'),
+  path: path.join(__dirname, '/public/build'),
   filename: '[name].js',
   chunkFilename: '[name].[id].js',
+  clean: prod ? true : false
 };
 
 const rules = [
@@ -44,7 +42,12 @@ const rules = [
   },
   {
     test: /\.css$/,
-    use: [MiniCssExtractPlugin.loader, 'css-loader'],
+    use: [MiniCssExtractPlugin.loader, {
+      loader: 'css-loader',
+      options: {
+        url: false
+      },
+    }],
   },
   {
     // required to prevent errors from Svelte on Webpack 5+
@@ -52,7 +55,7 @@ const rules = [
     resolve: {
       fullySpecified: false,
     },
-  },
+  }
 ];
 
 const plugins = [
@@ -61,14 +64,12 @@ const plugins = [
   }),
 ];
 
-if (!prod) plugins.push(ElectronReloadPlugin());
-
 module.exports = {
   target: 'electron-main',
   entry: {
-    'build/render': ['./src/render.ts'],
-    'build/app': ['./src/electron/app.ts'],
-    'build/bridge': ['./src/electron/bridge.ts'],
+    'render': ['./src/render.ts'],
+    'app': ['./src/electron/app.ts'],
+    'bridge': ['./src/electron/bridge.ts'],
   },
   resolve,
   output,
