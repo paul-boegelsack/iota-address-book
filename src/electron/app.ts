@@ -3,7 +3,7 @@ import { exit } from 'process'
 import { join } from 'path'
 import { homedir } from 'os'
 import { EventEmitter } from 'events'
-import { app, BrowserWindow, ipcMain, clipboard } from 'electron'
+import { app, BrowserWindow, ipcMain, clipboard, Menu, MenuItemConstructorOptions } from 'electron'
 import { SingleNodeClient } from '@iota/iota.js'
 import { MqttClient } from '@iota/mqtt.js'
 
@@ -25,6 +25,53 @@ const errorLogPath = join(`${dir}`, 'error.log')
 const errorHelper = new ErrorHelper(errorLogPath)
 const storageHelepr = new AddressStorageHelper(storagePath, addressService)
 let mainWindow: BrowserWindow
+
+const isMac = process.platform === 'darwin'
+
+const setAddMode = () => {
+    events.emit('add-mode')
+}
+
+const setSearchMode = () => {
+    events.emit('search-mode')
+}
+
+const modes = [
+    { label: 'add', click: setAddMode },
+    { label: 'search', click: setSearchMode },
+]
+
+const menuTeplate: MenuItemConstructorOptions[] = isMac
+    ? [
+          {
+              label: app.name,
+              submenu: [
+                  {
+                      label: 'input modes',
+                      submenu: modes,
+                  },
+                  {
+                      type: 'separator',
+                  },
+                  {
+                      role: 'quit',
+                  },
+              ],
+          },
+      ]
+    : [
+          {
+              label: 'Files',
+              submenu: [{ role: 'close' }],
+          },
+          {
+              label: 'Modes',
+              submenu: modes,
+          },
+      ]
+
+const menu = Menu.buildFromTemplate(menuTeplate)
+Menu.setApplicationMenu(menu)
 
 /**
  * Creating main window
@@ -49,6 +96,14 @@ function createMainWindow(): void {
             mainWindow.show()
             storageHelepr.AddresLoadListener(loadedAddresses)
             storageHelepr.LoadAddresses().catch((error: Error) => errorHelper.HandleError(error))
+        })
+
+        events.on('add-mode', () => {
+            mainWindow.webContents.send('event/add-mode', addressList)
+        })
+
+        events.on('search-mode', () => {
+            mainWindow.webContents.send('event/search-mode', addressList)
         })
 
         events.on('balance-changed', (addressList) => {

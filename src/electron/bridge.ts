@@ -17,6 +17,10 @@ export const WINDOW_API = {
     DeleteAddressFromList: (bechAddress: string): Promise<IotaAddress[]> =>
         ipcRenderer.invoke('delete/address-list', bechAddress),
     AddressCopied: (bechAddress: string): Promise<unknown> => ipcRenderer.invoke('copy/address', bechAddress),
+
+    ListenToAddModeSet: (callback: AddressListEventCallback): IpcRenderer => ipcRenderer.on('event/add-mode', callback),
+    ListenToSearchModeSet: (callback: AddressListEventCallback): IpcRenderer =>
+        ipcRenderer.on('event/search-mode', callback),
     ListenToAddressesLoaded: (callback: AddressListEventCallback): IpcRenderer =>
         ipcRenderer.on('event/loaded-addresses', callback),
     ListenToBalanceChanged: (callback: AddressListEventCallback): IpcRenderer =>

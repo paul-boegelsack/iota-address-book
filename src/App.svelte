@@ -51,14 +51,9 @@
 	let activeMode = addMode
 	let placeholder = activeMode.GetPlaceholder();
 
-	function onInput(event) {
-		addressInput = event.target.value;
-	}
-
-	function onChangeInputMode (event){
-		event.preventDefault;
+	function changeInputMode(modeName){
 		inputModes.forEach(mode => {
-            if(mode.GetName() === this.name){
+            if(mode.GetName() === modeName){
 				placeholder = mode.GetPlaceholder();
 				mode.SetActive(true);
 				activeMode = mode;
@@ -69,6 +64,16 @@
 			return mode;
         })
 		inputModes = [...inputModes];
+	}
+
+	function onInput(event) {
+		addressInput = event.target.value;
+	}
+
+	function onChangeInputMode (event){
+		event.preventDefault;
+		changeInputMode(this.name)
+		
     }
 
 	async function onInputKeypress (event) {
@@ -84,6 +89,14 @@
 	async function onAddressCopied(){
 		await window.api.AddressCopied(<string> this.bechAddress)
 	}
+
+	window.api.ListenToAddModeSet(function() {
+		changeInputMode('Add')
+	})
+
+	window.api.ListenToSearchModeSet(function() {
+		changeInputMode('Search');
+	})
 
 	window.api.ListenToAddressesLoaded((event, newAddressList) => {
 		addresses = prepareAddresses(newAddressList);
