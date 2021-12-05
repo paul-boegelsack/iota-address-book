@@ -3,7 +3,7 @@ import { exit } from 'process'
 import { join } from 'path'
 import { homedir } from 'os'
 import { EventEmitter } from 'events'
-import { app, BrowserWindow, ipcMain, clipboard, Menu, MenuItemConstructorOptions } from 'electron'
+import { app, BrowserWindow, ipcMain, clipboard, Menu, MenuItemConstructorOptions, globalShortcut } from 'electron'
 import { SingleNodeClient } from '@iota/iota.js'
 import { MqttClient } from '@iota/mqtt.js'
 
@@ -37,8 +37,8 @@ const setSearchMode = () => {
 }
 
 const modes = [
-    { label: 'add', click: setAddMode },
-    { label: 'search', click: setSearchMode },
+    { label: 'Add', click: setAddMode, acceelerator: 'Alt+CmdOrCtrl+A' },
+    { label: 'Search', click: setSearchMode, acceelerator: 'Alt+CmdOrCtrl+S' },
 ]
 
 const menuTeplate: MenuItemConstructorOptions[] = isMac
@@ -47,7 +47,7 @@ const menuTeplate: MenuItemConstructorOptions[] = isMac
               label: app.name,
               submenu: [
                   {
-                      label: 'input modes',
+                      label: 'Input Modes',
                       submenu: modes,
                   },
                   {
@@ -70,6 +70,19 @@ const menuTeplate: MenuItemConstructorOptions[] = isMac
           },
       ]
 
+menuTeplate.push({
+    label: 'Edit',
+    submenu: [
+        { role: 'undo', accelerator: 'CmdOrCtrl+Z' },
+        { role: 'redo', accelerator: 'Shift+CmdOrCtrl+Z' },
+        { type: 'separator' },
+        { role: 'cut', accelerator: 'CmdOrCtrl+X' },
+        { role: 'copy', accelerator: 'CmdOrCtrl+C' },
+        { role: 'paste', accelerator: 'CmdOrCtrl+V' },
+        { role: 'selectAll', accelerator: 'CmdOrCtrl+A' },
+    ],
+})
+
 const menu = Menu.buildFromTemplate(menuTeplate)
 Menu.setApplicationMenu(menu)
 
@@ -83,7 +96,7 @@ function createMainWindow(): void {
             width: 800,
             height: 600,
             show: false,
-            autoHideMenuBar: true,
+            autoHideMenuBar: false,
             webPreferences: {
                 preload: join(__dirname, './bridge.js'),
             },
