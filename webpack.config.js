@@ -14,9 +14,10 @@ const resolve = {
 };
 
 const output = {
-  path: path.join(__dirname, '/public'),
+  path: path.join(__dirname, '/public/build'),
   filename: '[name].js',
   chunkFilename: '[name].[id].js',
+  clean: prod ? true : false
 };
 
 const rules = [
@@ -66,9 +67,9 @@ const plugins = [
 module.exports = {
   target: 'electron-main',
   entry: {
-    'build/render': ['./src/render.ts'],
-    'build/app': ['./src/electron/app.ts'],
-    'build/bridge': ['./src/electron/bridge.ts'],
+    'render': ['./src/render.ts'],
+    'app': ['./src/electron/app.ts'],
+    'bridge': ['./src/electron/bridge.ts'],
   },
   resolve,
   output,
