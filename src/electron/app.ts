@@ -37,8 +37,8 @@ const setSearchMode = () => {
 }
 
 const modes = [
-    { label: 'Add', click: setAddMode, acceelerator: 'Alt+CmdOrCtrl+A' },
-    { label: 'Search', click: setSearchMode, acceelerator: 'Alt+CmdOrCtrl+S' },
+    { label: 'Add', click: setAddMode },
+    { label: 'Search', click: setSearchMode },
 ]
 
 const menuTeplate: MenuItemConstructorOptions[] = isMac
