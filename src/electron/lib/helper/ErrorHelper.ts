@@ -16,7 +16,10 @@ export class ErrorHelper {
      */
     HandleError(error: Error): void {
         if (this.errorLogPath === undefined) return
-        fs.appendFileSync(this.errorLogPath, `${error.toString()}\n`)
+        const date = new Date().toString()
+        const errorString = `${date}:\n${error.stack}\n\n`
+        console.error(errorString)
+        fs.appendFileSync(this.errorLogPath, errorString)
         exit(1)
     }
 }

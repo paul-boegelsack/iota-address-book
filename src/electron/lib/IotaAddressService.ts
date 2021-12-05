@@ -38,9 +38,15 @@ export class IotaAddressService {
      * @returns IotaAddress object
      */
     async GetAddress(bechAddress: string): Promise<IotaAddress> {
-        const { balance } = await this.nodeClient.address(bechAddress)
-        const address = new IotaAddress(bechAddress, balance)
-        this.listenToAddressBalance(address)
-        return address
+        try {
+            const { balance } = await this.nodeClient.address(bechAddress)
+            const address = new IotaAddress(bechAddress, balance)
+            this.listenToAddressBalance(address)
+            return address
+        } catch (error) {
+            if (error.code === '400') throw new Error('address/undefined')
+
+            throw error
+        }
     }
 }

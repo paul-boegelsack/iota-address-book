@@ -110,24 +110,42 @@ function deleteFromAddressList(bechAddress: string) {
 }
 
 ipcMain.handle('update/address-list', async (event, bechAddress: string) => {
+    try {
     const exists = addressList.find((address) => address.GetBechAddress() === bechAddress)
     if (exists) return prepareAddressListForRenderer()
 
-    const address: IotaAddress = await addressService.GetAddress(bechAddress)
-    address.ListenToBalanceChange(addressBalanceChanged)
-    addressList.push(address)
-    await storageHelepr.UpdateStorage(addressList)
-    return prepareAddressListForRenderer()
+        const address: IotaAddress = await addressService.GetAddress(bechAddress)
+        address.ListenToBalanceChange(addressBalanceChanged)
+        addressList.push(address)
+        await storageHelepr.UpdateStorage(addressList)
+        return prepareAddressListForRenderer()
+    } catch (error) {
+        if (error instanceof Error) {
+            if (error.message === 'address/undefined') return prepareAddressListForRenderer()
+            errorHelper.HandleError(error)
+        }
+        exit(1)
+    }
 })
 
 ipcMain.handle('delete/address-list', async (event, bechAddress: string) => {
-    deleteFromAddressList(bechAddress)
-    await storageHelepr.UpdateStorage(addressList)
-    return prepareAddressListForRenderer()
+    try {
+        deleteFromAddressList(bechAddress)
+        await storageHelepr.UpdateStorage(addressList)
+        return prepareAddressListForRenderer()
+    } catch (error) {
+        if (error instanceof Error) errorHelper.HandleError(error)
+        exit(1)
+    }
 })
 
 ipcMain.handle('copy/address', (event, bechAddress: string) => {
-    clipboard.writeText(bechAddress)
+    try {
+        clipboard.writeText(bechAddress)
+    } catch (error) {
+        if (error instanceof Error) errorHelper.HandleError(error)
+        exit(1)
+    }
 })
 
 app.on('ready', createMainWindow)
